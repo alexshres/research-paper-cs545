@@ -1,0 +1,57 @@
+
+\section{Abstract and Introduction}
+
+The GELU activation function is \(x\Phi(x)\) where \(\Phi(x)\) is the standard Gaussian cumulative distribution function. The GELU nonlinearity weights inputs by their value, rather than gates inputs by their sign as in ReLUs. The paper performs an empirical evaluation of the GELU nonlinearity against the ReLU and ELU activations.
+
+\text{\newline}
+
+As networks became deeper, sigmoid activations proved less effective and less-probabilistic for training compared to ReLU (makes hard gating decisions based upon an input's sign: \(1\ if\ x > 0\ else\ 0\). GELU relates to stochastic regularizers (?) - expectation of a modification to Adaptive Dropout, leading to a more probabilistic view of a neuron's output.
+
+
+\section{GELU Formation}
+
+\begin{itemize}
+    \item ReLU and dropout both yield a neuron's output
+    \item ReLU does this deterministically while dropout does this randomly
+    \item GELU multiplies the input by zero or one stochasictaclly by multiplying the neuron input $x$ by \(m\sim \text{Bernoulli}(\Phi(x))=P(X \leq x),\ X \sim \mathcal{N}(0,1)\).
+    \item as $x$ decreases, inputs have a higher probability of being 'dropped"
+    \item due to wanting a deterministic decision\footnote{an input should not have multiple different outputs, also leads to more stability as a slight change in the input should not cause a drastic change in the output} from a neural network we can take the expected transformation of the regularizer on an in put $x$ where we have \(\Phi(x) \times 1x + (1 - \Phi(x))\times 0x = x\Phi(x)\)
+    \item We can approximate the GELU with
+        \[
+            \text{GELU}(x) = xP(X \leq x) = x\Phi(x) = x \cdot \frac{1}{2}\left [1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right) \right]
+        \]
+\end{itemize}
+
+\section{GELU Experiments}
+
+    \subsection{MNIST Classification}
+
+        \begin{itemize}
+            \item Evaluated GELU against ELU and ReLU
+            \item Each 8-layer 128 neuron wide neural network is trained for 50 epochs with a batch size of 128
+            \item uses Adam optimizer instead of SGD w/o momentum
+            \item weights are initialized with unit norm rows, as this has positive impact on each nonlinearity's performance\footnote{need to dig into this a little more}
+            \item Tuned over the learning rates \{ $10^{-3}$, $10^{-4}$, $10^{5}$ \} with 5k validation examples from the training set and take the median results for five runs
+            \item GELU tends to have lowest mediam training log logg w/ and w/o dropout (Figure 2)
+            \item GELU is more robust to noised inputs (Figure 3)
+        \end{itemize}
+
+    \subsection{MNIST Autoencoder}
+
+        \begin{itemize}
+            \item Train a deep autoencoder on MNIST with layers of width 1000, 500, 250, 30, 250, 500, 1000 in that order
+            \item Use Adam optimizer and batch size of 64
+            \item Loss is MSE
+            \item Learning rate is varied from $10^{-3}$ to $10^{-4}$
+        \end{itemize}
+
+    \subsection{CIFAR-10/100}
+
+
+
+\section{Discussion}
+    \begin{itemize}
+        \item GELU performed previous nonlinearities across several experiments
+        \item However as \(\sigma \to 0 \) and $\mu=0$ then the GELU becomes a ReLU\footnote{how does the GELU become a ReLU?}
+    \end{itemize}
+
