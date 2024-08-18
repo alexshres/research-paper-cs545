@@ -5,6 +5,7 @@
 \usepackage{bbm}
 \usepackage{setspace}
 \usepackage{fancyhdr}
+\usepackage{cite}
 
 \setlength{\headheight}{14.49998pt}
 
@@ -31,7 +32,8 @@ to their substantial importance in neural networks. Activations functions\
 introduce the much needed non-linearity and thus are fundamental to neural\
 networks. Without non-linear activations, a very deep layered neural network\
 could be represented by a single layer. The paper I will analyze is Gaussian\
-Error Linear Units (GELUs) by Dan Hendrycks and Kevin Gimpel. The paper's goal\
+Error Linear Units (GELUs)\cite{DBLP:journals/corr/HendrycksG16} by Dan Hendrycks and Kevin Gimpel. 
+The paper's goal\
 is to introduce a new activation function called the Gaussian Error Linear Unit\
 or GELU for short. The paper emprically evalutates how the GELU performs against\
 standard non-linear activations ReLU and ELU by running experiments on the\
@@ -61,25 +63,64 @@ $x$ by \( m \sim  \text{Bernoulli}(\Phi(x))=P(X \leq x),\ X \sim \mathcal{N}(0,1
 .  We can notice that as $x$ decreases, the probability of the input being dropped\
 inversely increases. However, the goal is to have a "deterministic decision".\
 What this means is that an input should not have multiple different outputs,\
-leading to more stability since slight changes in the input will not cause a\
+thus, leading to more stability since slight changes in the input will not cause a\
 drastic change. To achieve this goal, the expected value of the transformation on\
 an input $x$ is taken: we have \( \Phi(x) \times 1x + (1 - \Phi(x)) \times 0x = x\Phi(x) \).\
 This equation can be approximated leading to:
 \[
-    \text{GELU}(x) = xP(X \leq x) = x\Phi(x) = x \cdot \frac{1}{2}\left [1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right) \right]
+    \text{GELU}(x) = xP(X \leq x) = x\Phi(x) = x \cdot \frac{1}{2}\left [1 + \text{erf}
+    \left(\frac{x}{\sqrt{2}}\right) \right]
 \]
 where the error function is used to compute the cumulative distribution function of\
 the Gaussian.
 
 \text{\newline}
 
-
-
+The authors evaluated GELU against ReLU and ELU on MNIST classification, MNIST autoencoding, 
+Twitter\ part-of-speech tagging, TIMIT frame recoginition, and CIFAR-10/100 datasets. On the\
+MNIST classification dataset, they were able to show that classifiers using GELU are more\
+robust to noised inputs which they showed by adding uniform noise to each input data. They\
+were also able to show that taking the median result over multiple runs, GELU tends to have\
+the lowest median training log loss both with and without dropout. When training a deep\
+autoencoder on MNIST they saw similar results: mean squared loss was lowest using the GELU\
+compared to the other non-linear activation functions. Similar results were shown in both\
+the TIMIT dataset and the Twitter POS dataset as well. When working with more intricate architecture\
+such as shallow and deep convolutional neural networks, the GELU activation function still outperforms\
+the other non-linear functions. The authors used the CIFAR-10/100 dataset and still saw GELU\
+obtaining the lowest median error rate compared to ReLU and ELU.
 
 
 \section{Conclusion}
 
+In the discussion section, the authors note that even though GELU performed better, it still had\
+some similarities to the ReLU and ELU. They note that the GELU can be viewed as a way to smooth ReLU\
+similar to how the sigmoid smoothed the binary threshold activations. That being said GELU also has important\
+differentiations from previous non-linear functions. GELU is a non-convex, non-monotonic, and non-linear\
+in the positive domain and it exhibits curvature at all points. This may allow the GELU to better approximate\
+more complicated functions than the ReLU. Also due to GELU being an expected value, it also has a probabilistic\
+interpretation that the ReLU does not. The authors also make a point to ntoe that the ReLUs gate the input\
+depending on the sign of the input whereas GELU weights its input "depending upon how much greater it is than\
+other inputs." What this means is that the $\Phi(x)$ term weights the input by the probability that a standard\
+random variable is less than or equal to $x$: the $\Phi(x)$ is adjusting how much of $x$ should be passed through\
+based on its relative magnitude in the normal distribution. Based on the experiments shown in this paper, it has\
+been shown that GELU is a viable alternative to other non-linearities due to its consistent performance.
 
-\section{References}
+\section{Questions}
+
+Some questions I have for the authors:
+
+\begin{enumerate}
+    \item What in your prior research or experience led you to believe that the current set of non-linear\
+        activation functions could be improved upon thus leading to the creation of the GELU?
+    \item What inspired the mathematical formulation of the GELU: how did you come up with GELU specifically?
+    \item Do you believe that the experiments you performed were diverse enough to choose GELU as an alternative\
+        activation function in any situation that requires a neural network architecture?
+    \item In what settings does the GELU not perform as well as the other functions?
+    \item What are some weaknesses of the GELU that can be improved upon?
+\end{enumerate}
+
+
+\bibliographystyle{plain}
+\bibliography{references}
 
 \end{document}
