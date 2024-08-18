@@ -45,7 +45,7 @@ were useful in the early days of networks but as networks became deeper, the\
 performance of the sigmoid diminished. Thus ReLU came about and it's "non-smooth\
 gating" provided faster and better convergence. One issue with ReLU was its\
 inability to output negative values and its less probabilistic nature. Thus the\
-GELU was born which incorporates a probabilistic approach which will explore next.
+GELU was born, incorporating a probabilistic approach which will be explored next.
 
 \section{Analysis}
 The GELU activation function is \( x \Phi(x) \) where $\Phi(x)$ is the standard\
@@ -63,7 +63,8 @@ $x$ by \( m \sim  \text{Bernoulli}(\Phi(x))=P(X \leq x),\ X \sim \mathcal{N}(0,1
 .  We can notice that as $x$ decreases, the probability of the input being dropped\
 inversely increases. However, the goal is to have a "deterministic decision".\
 What this means is that an input should not have multiple different outputs,\
-thus, leading to more stability since slight changes in the input will not cause a\
+thus a deterministic decision leads to a more stable output since slight changes 
+in the input will not cause a\
 drastic change. To achieve this goal, the expected value of the transformation on\
 an input $x$ is taken: we have \( \Phi(x) \times 1x + (1 - \Phi(x)) \times 0x = x\Phi(x) \).\
 This equation can be approximated leading to:
@@ -85,7 +86,7 @@ the lowest median training log loss both with and without dropout. When training
 autoencoder on MNIST they saw similar results: mean squared loss was lowest using the GELU\
 compared to the other non-linear activation functions. Similar results were shown in both\
 the TIMIT dataset and the Twitter POS dataset as well. When working with more intricate architecture\
-such as shallow and deep convolutional neural networks, the GELU activation function still outperforms\
+such as shallow and deep convolutional neural networks, the GELU activation function still outperformed\
 the other non-linear functions. The authors used the CIFAR-10/100 dataset and still saw GELU\
 obtaining the lowest median error rate compared to ReLU and ELU.
 
@@ -98,7 +99,7 @@ similar to how the sigmoid smoothed the binary threshold activations. That being
 differentiations from previous non-linear functions. GELU is a non-convex, non-monotonic, and non-linear\
 in the positive domain and it exhibits curvature at all points. This may allow the GELU to better approximate\
 more complicated functions than the ReLU. Also due to GELU being an expected value, it also has a probabilistic\
-interpretation that the ReLU does not. The authors also make a point to ntoe that the ReLUs gate the input\
+interpretation that the ReLU does not. The authors also make a point to note that the ReLUs gate the input\
 depending on the sign of the input whereas GELU weights its input "depending upon how much greater it is than\
 other inputs." What this means is that the $\Phi(x)$ term weights the input by the probability that a standard\
 random variable is less than or equal to $x$: the $\Phi(x)$ is adjusting how much of $x$ should be passed through\
