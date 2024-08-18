@@ -53,5 +53,13 @@ As networks became deeper, sigmoid activations proved less effective and less-pr
     \begin{itemize}
         \item GELU performed previous nonlinearities across several experiments
         \item However as \(\sigma \to 0 \) and $\mu=0$ then the GELU becomes a ReLU\footnote{how does the GELU become a ReLU?}
+        \item GELU can be viewed as a way to smooth a ReLU since if we recall that \(\text{ReLU} = \text{max}(x, 0) = x \mathbbm{1}\left(x > 0\right)\) where \(\mathbbm{1} \) is the indicator function
+        \item However, GELU has several notable differences
+            \begin{itemize}
+                \item it is non-convex, non-monotonic, and non-linear in the positive domain and exhibits curvature at all points
+                \item the above allows GELU to approximate more complicated functions than ReLU
+                \item while ReLU gates the input depending on the input's sign, GELU weights its input depending upon how much greater it is than other inputs
+                \item GELU has a probabilistic interpretation given that it is the expectation of a stochastic regularizer
+            \end{itemize}
     \end{itemize}
 
